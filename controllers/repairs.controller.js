@@ -1,4 +1,4 @@
-const User = require('../models/repair.model');
+const Repair = require('../models/repair.model');
 
 const findRepairs = async (req, res) => {
   try {
