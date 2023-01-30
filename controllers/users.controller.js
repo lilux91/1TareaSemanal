@@ -142,7 +142,7 @@ const deleteUser = async (req, res) => {
       });
     }
     // 4. REALIZAR LA ACTUALIZACIÓN DEL STATUS DEL USUARIO ENCONTRADO ANTERIORMENTE
-    await user.update({ status: false });
+    await user.update({ status: dissabled });
     // 5. ENVIAR UNA RESPUESTA AL CLIENTE
     res.status(200).json({
       status: 'success',

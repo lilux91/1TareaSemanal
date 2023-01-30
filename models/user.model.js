@@ -29,7 +29,7 @@ const User = db.define('user', {
   role: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'user',
+    defaultValue: 'client',
     enum: ['client', 'employee'], //que valores van en roles
   },
 

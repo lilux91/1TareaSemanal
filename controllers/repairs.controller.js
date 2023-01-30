@@ -1,160 +1,163 @@
-const Repair = require('../models/repair.model');
+const User = require('../models/repair.model');
 
-exports.findRepairs = async (req, res) => {
-  //const { param1, param2 } = req.params;
-
+const findRepairs = async (req, res) => {
   try {
+    // 1. BUSCAR TODOS LOS USUARIOS QUE ESTAN CON STATUS TRUE
     const repairs = await Repair.findAll({
       where: {
         status: true,
       },
     });
 
+    // 2. ENVIAR UNA RESPUESTA AL USUARIO
     res.status(200).json({
       status: 'success',
-      message: 'The repairs found were successfully',
+      message: 'Pending',
       repairs,
     });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
       status: 'fail',
-      message: 'Internal Server Error',
+      message: 'Internal server error',
     });
   }
 };
 
-exports.findRepair = async (req, res) => {
+const findRepair = async (req, res) => {
   try {
+    // 1. OBTENER EL ID DE LOS PARAMETROS
     const { id } = req.params;
 
+    // 2. BUSCAR AL USUARIO CON EL ID QUE VENIA DE LOS PARAMETROS, Y QUE EL STATUS SEA TRUE
     const repair = await Repair.findOne({
       where: {
-        id,
         status: true,
+        id,
       },
     });
 
-    if (!product) {
+    // 3. SI NO EXISTE EL USUARIO ENVIAR UNA RESPUESTA DE ERROR
+    if (!repair) {
       return res.status(404).json({
         status: 'error',
-        message: 'The repair was not found',
+        message: 'User not found',
       });
     }
 
-    return res.status(200).json({
+    // 4. ENVIAR UNA RESPUESTA AL USUARIO
+    res.status(200).json({
       status: 'success',
-      message: 'The repair was found successfully',
+      message: 'Pending',
       repair,
     });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
       status: 'fail',
-      message: 'Internal Server Error',
+      message: 'Internal server error',
     });
   }
 };
 
-exports.createRepair = async (req, res) => {
+const createRepair = async (req, res) => {
   try {
-    const { name, price, stock } = req.body;
-
-    const newRepair = await Repair.create({
-      name: name.toLowerCase(),
-      price,
-      stock,
-    });
-
-    res.status(201).json({
-      status: 'success',
-      message: 'The repair was created successfully',
-      newRepair,
-    });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       status: 'fail',
-      message: 'Internal Server Error',
+      message: 'Internal server error',
     });
   }
+  //1. OBTENER LA INFORMACION DE LA REQ.BODY
+  const { date, userId } = req.body;
+  //2. CREAR EL USUARIO CON LA INFORMACION DE LA REQ.BODY
+  const repair = await Repair.create({
+    date: date.toLowerCase(),
+    userId, //client or employee
+  });
+  //3. ENVIAR UNA RESPUESTA AL USUARIO
+  res.status(201).json({
+    status: 'success',
+    message: 'Pending',
+    repair,
+  });
 };
 
-exports.updateRepair = async (req, res) => {
+const updateRepair = async (req, res) => {
   try {
-    //1. OBTENGO MI ID DE LA REQ.PARAMS
+    // 1. OBTENER EL ID DE LOS PARAMETROS
     const { id } = req.params;
-    //2. OBTENER LA INFORMACION A ACTUALIZAR DE LA REQ.BODY
-    const { name, price, stock } = req.body;
-    //3. BUSCAR LA REPARACION A ACTUALIZAR
+    // 2. OBTENER LA INFORMACION A ACTUALIZAR DE LA REQ.BODY
+    const { date, userId } = req.body;
+
+    // 3. OBTENER UN USUARIO POR SU ID Y QUE EL STATUS SEA TRUE
     const repair = await Repair.findOne({
       where: {
-        id,
         status: true,
+        id,
       },
     });
-    //4. SI NO EXISTE LA REPARACION ENVIAMOS UN ERROR
+    //4. SI NO EXISTE UN USUARIO ENVIAR UN ERROR
     if (!repair) {
       return res.status(404).json({
         status: 'error',
-        message: 'The repair was not found',
+        message: 'User not found',
       });
     }
-    //5. SI TODO SALIO BIEN, ACTUALIZAMOS LA REPARACION ENCONTRADO
-    const updatedRepair = await repair.update({
-      name,
-      price,
-      stock,
-    });
-    //6. ENVIO LA RESPUESTA AL CLIENTE
+
+    // 5. REALIZAR LA ACTUALIZACIÓN DEL USUARIO, CAMPOS USERNAME, EMAIL
+    await repair.update({ date, userId });
+
+    // 6. ENVIAR UNA RESPUESTA AL CLIENTE
     res.status(200).json({
       status: 'success',
-      message: 'Then repair has been updated successfully',
-      updatedRepair,
+      message: 'Completed',
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       status: 'fail',
-      message: 'Internal Server Error',
+      message: 'Internal server error',
     });
   }
 };
 
-exports.deleteRepair = async (req, res) => {
+const deleteRepair = async (req, res) => {
   try {
-    //1. OBTENGO EL ID DE LA REQ.PARAMS
+    // 1. OBTENER EL ID DE LOS PARAMETROS
     const { id } = req.params;
-    //2. BUSCAR EL PRODUCTO A ELIMINAR
+    // 2. OBTENER UN USUARIO POR SU ID Y QUE EL STATUS SEA TRUE
     const repair = await Repair.findOne({
       where: {
-        id,
         status: true,
+        id,
       },
     });
-
-    //3. ENVIAR UN ERROR SI LA REPARACION NO SE ENCUENTRA
+    //3. SI NO EXISTE UN USUARIO ENVIAR UN ERROR
     if (!repair) {
       return res.status(404).json({
         status: 'error',
-        message: 'The repair was not found',
+        message: 'Disable a user account',
       });
     }
-    //4. ACTUALIZAR EL ESTADO DE LA REPARACION A FALSE
-    await repair.update({ status: false });
-    //await product.destroy();
-
-    //5. ENVIAR LA RESPUESTA AL CLIENTE
-
+    // 4. REALIZAR LA ACTUALIZACIÓN DEL STATUS DEL USUARIO ENCONTRADO ANTERIORMENTE
+    await repair.update({ status: cancelled });
+    // 5. ENVIAR UNA RESPUESTA AL CLIENTE
     res.status(200).json({
       status: 'success',
-      message: 'Cancel a user repair',
+      message: 'Repair deleted successfully',
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       status: 'fail',
-      message: 'Internal Server Error',
+      message: 'Internal server error',
     });
   }
+};
+
+module.exports = {
+  findRepairs,
+  findRepair,
+  createRepair,
+  updateRepair,
+  deleteRepair,
 };

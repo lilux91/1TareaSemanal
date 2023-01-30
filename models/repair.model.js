@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { db } = require('../database/db');
 
-const Product = db.define('repair', {
+const Repair = db.define('repair', {
   id: {
     //llaves primarias
     primaryKey: true,
@@ -27,4 +27,4 @@ const Product = db.define('repair', {
   },
 });
 
-module.exports = Product;
+module.exports = Repair;
