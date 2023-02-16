@@ -2,6 +2,8 @@ const catchAsync = require('../utils/catchAsync');
 const bcrypt = require('bcryptjs');
 const generateJWT = require('../utils/jwt');
 const AppError = require('../utils/appError');
+const User = require('../models/user.model');
+//const { promisify } = require('util');
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;

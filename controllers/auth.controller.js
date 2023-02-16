@@ -5,7 +5,7 @@ const generateJWT = require('../utils/jwt');
 const AppError = require('../utils/appError');
 
 exports.createUser = catchAsync(async (req, res) => {
-  const { username, email, password, role = 'user' } = req.body;
+  const { name, email, password, role = 'user' } = req.body;
 
   //   const user = await User.create({
   //     username: username.toLowerCase(),
@@ -14,7 +14,7 @@ exports.createUser = catchAsync(async (req, res) => {
   //     role,
   //   });
   //1. crear una instancia de la clase user
-  const user = new User({ username, email, password, role });
+  const user = new User({ name, email, password, role });
   //2. encriptar la contraseña
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(password, salt);

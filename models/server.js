@@ -7,12 +7,11 @@ const morgan = require('morgan');
 const { categoriesRouter } = require('../routes/category.routes');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const morgan = require('morgan');
 
 const { authRouter } = require('../routes/auth.routes');
 const AppError = require('../utils/appError');
 const globalErrorHandler = require('../controllers/error.controller');
-const initModel = require('./initModels');
+const initModel = require('../models/init.models');
 
 //1. CREAMOS UNA CLASE
 

@@ -27,10 +27,9 @@ const User = db.define('user', {
   },
 
   role: {
-    //
-    type: DataTypes.ENUM('user', 'admin'),
+    type: DataTypes.ENUM('client', 'employee'),
     allowNull: false,
-    defaultValue: 'user',
+    defaultValue: 'client',
     //enum: ['client', 'employee'], //que valores van en roles
   },
 
@@ -43,3 +42,5 @@ const User = db.define('user', {
 });
 
 module.exports = User;
+
+//https://sequelize.org/api/v6/class/src/data-types.js~enum
