@@ -1,11 +1,16 @@
 const User = require('../models/user.model');
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 const findUsers = async (req, res) => {
+  //exports.findUsers = async (req, res) => {
   try {
     // 1. BUSCAR TODOS LOS USUARIOS QUE ESTAN CON STATUS TRUE
     const users = await User.findAll({
+      //attributes: ['id' , 'name','email']
       where: {
         status: true,
+        //status: 'available' por defecto
       },
     });
 
@@ -32,7 +37,9 @@ const findUser = async (req, res) => {
     // 2. BUSCAR AL USUARIO CON EL ID QUE VENIA DE LOS PARAMETROS, Y QUE EL STATUS SEA TRUE
     const user = await User.findOne({
       where: {
-        status: true,
+        attributes: ['id', 'name', 'email'],
+        // status: true,
+        status: 'available',
         id,
       },
     });

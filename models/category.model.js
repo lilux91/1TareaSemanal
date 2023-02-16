@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { db } = require('../database/db');
 
-const Repair = db.define('repair', {
+const Category = db.define('categories', {
   id: {
     //llaves primarias
     primaryKey: true,
@@ -10,22 +10,16 @@ const Repair = db.define('repair', {
     type: DataTypes.INTEGER, //tipo de dato numero
   },
 
-  date: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false, //no quiero que sea nulo
   },
 
   status: {
-    //type: DataTypes.STRING,
-    type: DataTypes.ENUM('pending', 'completed', 'cancelled'),
+    type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: 'pending',
-    enum: 'pending', //['completed', 'cancelled'],
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    defaultValue: 'true',
   },
 });
 
-module.exports = Repair;
+module.exports = Category;

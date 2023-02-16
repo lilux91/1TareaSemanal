@@ -27,17 +27,18 @@ const User = db.define('user', {
   },
 
   role: {
-    type: DataTypes.STRING,
+    //
+    type: DataTypes.ENUM('user', 'admin'),
     allowNull: false,
-    defaultValue: 'client',
-    enum: ['client', 'employee'], //que valores van en roles
+    defaultValue: 'user',
+    //enum: ['client', 'employee'], //que valores van en roles
   },
 
   status: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: true, //valor por defecto
-    enum: ['available'],
+    defaultValue: 'available', //valor por defecto Client
+    enum: ['available', 'unavailable'],
   },
 });
 

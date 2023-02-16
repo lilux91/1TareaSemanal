@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { check } = require('express-validator');
 const {
   findUsers,
   findUser,
@@ -7,17 +8,19 @@ const {
   deleteUser,
 } = require('../controllers/users.controller');
 
+const { validIfExistUser } = require('../middlewares/user.middlewares');
+
 const router = Router();
 
 router.get('/', findUsers);
 
-router.get('/:id', findUser);
+router.get('/:id', validIfExistUser, findUser);
 
 router.post('/', createUser);
 
-router.patch('/:id', updateUser);
+router.patch('/:id', validIfExistUser, updateUser);
 
-router.delete('/:id', deleteUser);
+router.delete('/:id', validIfExistUser, deleteUser);
 
 module.exports = {
   usersRouter: router,

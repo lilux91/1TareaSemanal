@@ -1,11 +1,13 @@
 const Repair = require('../models/repair.model');
+const catchAsync = require('../utils/catchAsync');
 
 const findRepairs = async (req, res) => {
   try {
     // 1. BUSCAR TODOS LOS USUARIOS QUE ESTAN CON STATUS TRUE
     const repairs = await Repair.findAll({
       where: {
-        status: true,
+        // todo: listo las reparaciones con todos los estados posibles
+        // status: 'pending',
       },
     });
 
@@ -29,10 +31,10 @@ const findRepair = async (req, res) => {
     // 1. OBTENER EL ID DE LOS PARAMETROS
     const { id } = req.params;
 
-    // 2. BUSCAR AL USUARIO CON EL ID QUE VENIA DE LOS PARAMETROS, Y QUE EL STATUS SEA TRUE
+    // 2. BUSCAR AL USUARIO CON EL ID QUE VENIA DE LOS PARAMETROS
     const repair = await Repair.findOne({
       where: {
-        status: true,
+        // status: 'pending',
         id,
       },
     });
