@@ -14,6 +14,7 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please login again.', 401);
 
+//Errores de desarrollo
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -28,6 +29,7 @@ const sendErrorProd = (err, res) => {
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
+      //el mensaje de mi clase del AppError
       message: err.message,
     });
   } else {
@@ -40,22 +42,25 @@ const sendErrorProd = (err, res) => {
   }
 };
 
+//aca
 const globalErrorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'fail';
 
+  //
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   }
 
   if (process.env.NODE_ENV === 'production') {
+    //defino el error
     let error = { ...err };
     //if (error.parent.code === '22P02') error = handleCastError22P02(error);
 
     if (!error.parent?.code) {
       error = err;
     }
-
+    //error de tipos
     if (error.parent?.code === '22P02') error = handleCastError22P02(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError(error);
     if (error.name === 'TokenExpiredError')
