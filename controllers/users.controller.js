@@ -22,25 +22,13 @@ exports.findUsers = catchAsync(async (req, res, next) => {
 
 exports.findUser = catchAsync(async (req, res, next) => {
   // 1. OBTENER EL ID DE LOS PARAMETROS
-  const { user } = req;
-
-  // 2. BUSCAR AL USUARIO CON EL ID QUE VENIA DE LOS PARAMETROS, Y QUE EL STATUS SEA TRUE
-  // const user = await User.findOne({
-  //   where: {
-  //     attributes: ['id', 'name', 'email'],
-  //     // status: true,
-  //     status: 'available',
-  //     id,
-  //   },
-  // });
-
-  // 3. SI NO EXISTE EL USUARIO ENVIAR UNA RESPUESTA DE ERROR
-  // if (!user) {
-  //   return res.status(404).json({
-  //     status: 'error',
-  //     message: 'User not found',
-  //   });
-  // }
+  const { id } = req.params;
+  // 2. OBTENER LA INFORMACION A ACTUALIZAR DE LA REQ.BODY
+  const user = await User.findOne({
+    where: {
+      id: id,
+    },
+  });
 
   // 4. ENVIAR UNA RESPUESTA AL USUARIO
   res.status(200).json({
@@ -71,9 +59,14 @@ exports.createUser = catchAsync(async (req, res, next) => {
 exports.updateUser = catchAsync(async (req, res, next) => {
   // 1. OBTENER EL ID DE LOS PARAMETROS
 
+  const { id } = req.params;
   const { name, email } = req.body;
-  const { user } = req;
   // 2. OBTENER LA INFORMACION A ACTUALIZAR DE LA REQ.BODY
+  const user = await User.findOne({
+    where: {
+      id: id,
+    },
+  });
 
   // 5. REALIZAR LA ACTUALIZACIÓN DEL USUARIO, CAMPOS USERNAME, EMAIL
   //  await user.update({ name, email });
@@ -88,21 +81,20 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     message: 'User updated successfully',
     updateUser,
   });
-  // } catch (error) {
-  //   return res.status(500).json({
-  //     status: 'fail',
-  //     message: 'Internal server error',
 });
-//}
-//};
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
   // 1. OBTENER EL ID DE LOS PARAMETROS
-  const { user } = req;
-  // 2. OBTENER UN USUARIO POR SU ID Y QUE EL STATUS SEA TRUE
+  const { id } = req.params;
+  // 2. OBTENER LA INFORMACION A ACTUALIZAR DE LA REQ.BODY
+  const user = await User.findOne({
+    where: {
+      id: id,
+    },
+  });
 
   // 4. REALIZAR LA ACTUALIZACIÓN DEL STATUS DEL USUARIO ENCONTRADO ANTERIORMENTE
-  await user.update({ status: dissabled });
+  await user.update({ status: 'dissabled' });
   // 5. ENVIAR UNA RESPUESTA AL CLIENTE
   res.status(200).json({
     status: 'success',
@@ -110,6 +102,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   });
 });
 
+//Actualizar la contraseña
 exports.updatePassword = catchAsync(async (req, res, next) => {
   const { user } = req;
   const { currentPassword, newPassword } = req.body;

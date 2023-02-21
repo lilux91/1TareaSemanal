@@ -14,7 +14,12 @@ exports.createUser = catchAsync(async (req, res) => {
   //     role,
   //   });
   //1. crear una instancia de la clase user
-  const user = new User({ name, email, password, role });
+  const user = new User({
+    name: name.toLowerCase(),
+    email: email.toLowerCase(),
+    password,
+    role,
+  });
   //2. encriptar la contraseña
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(password, salt);
@@ -26,7 +31,6 @@ exports.createUser = catchAsync(async (req, res) => {
   res.status(201).json({
     status: 'success',
     message: 'User created successfully',
-    //user,
     token,
     user: {
       id: user.id,
@@ -44,7 +48,7 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({
     where: {
       email: email.toLowerCase(), //del model.user
-      status: true,
+      status: 'available',
     },
   });
 

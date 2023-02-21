@@ -1,4 +1,5 @@
 const Repair = require('../models/repair.model');
+const User = require('../models/user.model');
 const catchAsync = require('../utils/catchAsync');
 
 const findRepairs = catchAsync(async (req, res, next) => {
@@ -9,7 +10,13 @@ const findRepairs = catchAsync(async (req, res, next) => {
       // todo: listo las reparaciones con todos los estados posibles
       status: 'pending',
     },
+    include: [{ model: User }],
   });
+
+  //attributes :{ exclude:[ 'createdAt, 'updatedAt,]},
+  // where: {status: 'pending},
+  //include: [{model: User,
+  //attributes: ['id', 'date', 'userId]}]
 
   // 2. ENVIAR UNA RESPUESTA AL USUARIO
   return res.status(200).json({
@@ -54,11 +61,9 @@ const createRepair = catchAsync(async (req, res, next) => {
 
 const updateRepair = catchAsync(async (req, res, next) => {
   // 1. OBTENER EL ID DE LOS PARAMETROS
-  const { id } = req;
-  // 2. OBTENER LA INFORMACION A ACTUALIZAR DE LA REQ.BODY
-  const { date, userId } = req.body;
+  const { id } = req.params;
 
-  // 3. OBTENER UN USUARIO POR SU ID Y QUE EL STATUS SEA PENDING
+  // 2. OBTENER UN USUARIO POR SU ID Y QUE EL STATUS SEA PENDING
   const repair = await Repair.findOne({
     where: {
       status: 'pending',
@@ -66,35 +71,31 @@ const updateRepair = catchAsync(async (req, res, next) => {
     },
   });
 
-  await repair.update({ date, userId });
+  const status = 'completed';
+  await repair.update({ status });
 
-  // 6. ENVIAR UNA RESPUESTA AL CLIENTE
+  // 3. ENVIAR UNA RESPUESTA AL CLIENTE
   res.status(200).json({
     status: 'success',
-    message: 'Completed',
+    message: 'Repair updated successfully',
   });
 });
 
 const deleteRepair = catchAsync(async (req, res, next) => {
   // 1. OBTENER EL ID DE LOS PARAMETROS
-  const { id } = req;
+  const { id } = req.params;
   // 2. OBTENER UN USUARIO POR SU ID Y QUE EL STATUS SEA TRUE
   const repair = await Repair.findOne({
     where: {
-      status: true,
+      status: 'pending',
       id,
     },
   });
-  //3. SI NO EXISTE UN USUARIO ENVIAR UN ERROR
-  if (!repair) {
-    return res.status(404).json({
-      status: 'error',
-      message: 'Disable a user account',
-    });
-  }
-  // 4. REALIZAR LA ACTUALIZACIÓN DEL STATUS DEL USUARIO ENCONTRADO ANTERIORMENTE
-  await repair.update({ status: cancelled });
-  // 5. ENVIAR UNA RESPUESTA AL CLIENTE
+
+  // 3. REALIZAR LA ACTUALIZACIÓN DEL STATUS DEL USUARIO ENCONTRADO ANTERIORMENTE
+  const status = 'cancelled';
+  await repair.update({ status });
+  // 4. ENVIAR UNA RESPUESTA AL CLIENTE
   res.status(200).json({
     status: 'success',
     message: 'Repair deleted successfully',

@@ -1,3 +1,5 @@
+const { promisify } = require('util');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
@@ -43,5 +45,130 @@ exports.validIfExistUserEmail = catchAsync(async (req, res, next) => {
     return next(new AppError('The email user already exists', 400));
   }
 
+  next();
+});
+
+//validar el rol del usuario
+exports.validRoleUserClient = catchAsync(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access', 401)
+    );
+  }
+
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.SECRET_JWT_SEED
+  );
+
+  const user = await User.findOne({
+    where: {
+      id: decoded.id,
+      status: 'available',
+    },
+  });
+
+  if (!user) {
+    return next(
+      new AppError('The owner of this token it not longer available', 401)
+    );
+  }
+  //si no existe el usuario
+  if (user.role !== 'client') {
+    return next(new AppError('This role cannot access', 404));
+  }
+
+  req.user = user;
+  next();
+});
+
+exports.validRoleUserEmployee = catchAsync(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access', 401)
+    );
+  }
+
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.SECRET_JWT_SEED
+  );
+
+  const user = await User.findOne({
+    where: {
+      id: decoded.id,
+      status: 'available',
+    },
+  });
+
+  if (!user) {
+    return next(
+      new AppError('The owner of this token it not longer available', 401)
+    );
+  }
+
+  if (user.role !== 'employee') {
+    return next(new AppError('This role cannot access', 404));
+  }
+
+  req.user = user;
+  next();
+});
+
+exports.validOnlyOwner = catchAsync(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access', 401)
+    );
+  }
+
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.SECRET_JWT_SEED
+  );
+
+  const user = await User.findOne({
+    where: {
+      id: decoded.id,
+      status: 'available',
+    },
+  });
+
+  if (!user) {
+    return next(
+      new AppError('The owner of this token it not longer available', 401)
+    );
+  }
+
+  const { id } = req.params;
+  if (user.id != id) {
+    return next(new AppError('Only the owner can modify', 404));
+  }
+
+  req.user = user;
   next();
 });

@@ -33,6 +33,11 @@ const User = db.define('user', {
     //enum: ['client', 'employee'], //que valores van en roles
   },
 
+  passwordChangedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+
   status: {
     type: DataTypes.STRING,
     allowNull: false,
