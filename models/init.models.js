@@ -7,8 +7,4 @@ const initModel = () => {};
 User.hasMany(Repair);
 Repair.belongsTo(User);
 
-/*1Repair <----->  1User*/
-User.hasOne(Repair);
-Repair.belongsTo(User);
-
 module.exports = initModel;

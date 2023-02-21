@@ -4,7 +4,6 @@ const cors = require('cors');
 const { usersRouter } = require('../routes/user.routes');
 const { db } = require('../database/db');
 const morgan = require('morgan');
-const { categoriesRouter } = require('../routes/category.routes');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
@@ -64,8 +63,6 @@ class Server {
     this.app.use(this.paths.users, usersRouter);
     //utilizar las rutas de users
     this.app.use(this.paths.repairs, repairRouter);
-    //utilizar las rutas de categorias
-    this.app.use(this.paths.categories, categoriesRouter);
 
     //LLAMAR LA FUNCIÓN QUE CAPTURE LAS RUTAS NO ESTABLECIDAS PARA ENVIAR UN ERROR
     //DE QUE ESA RUTA NO HA SIDO ENCONTRADA
@@ -88,7 +85,7 @@ class Server {
     initModel();
     //relations
 
-    db.sync()
+    db.sync() //{force:true }
       .then(() => console.log('Database synced'))
       .catch(error => console.log(error));
   }

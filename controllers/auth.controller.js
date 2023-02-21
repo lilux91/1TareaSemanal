@@ -30,7 +30,7 @@ exports.createUser = catchAsync(async (req, res) => {
     token,
     user: {
       id: user.id,
-      username: user.username,
+      name: user.name,
       email: user.email,
       role: user.role,
     },
@@ -43,7 +43,7 @@ exports.login = catchAsync(async (req, res, next) => {
   //1. Check if user exist && password is correct
   const user = await User.findOne({
     where: {
-      email: email.toLowerCase(),
+      email: email.toLowerCase(), //del model.user
       status: true,
     },
   });
